@@ -179,6 +179,8 @@ Max Kranker
   - initial commit
 - 0.2.0
   - update readme to include tls cert instructions
+- 0.3.0
+  - move schema zed files to be internal to go project
 
 </details>
 
