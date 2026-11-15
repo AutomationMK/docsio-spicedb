@@ -181,6 +181,8 @@ Max Kranker
   - update readme to include tls cert instructions
 - 0.3.0
   - move schema zed files to be internal to go project
+- 0.4.0
+  - add authorization service defitinion as "Client" interface
 
 </details>
 
