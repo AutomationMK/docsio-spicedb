@@ -124,19 +124,35 @@ source .env
 set +a
 ```
 
-Creating the project involves running docker compose based on the [file](docker-compose.yml) provided in the project. Enter the following in your command line...
+Another thing is that for regular development the gRPC for spicedb still uses an ssl certificate,
+but we just do not verify the certeficate while in development. This certificate and key need to be
+placed in the certs folder of the project. The certificates will automatically be used by SpiceDB
+after creating the container in Docker. To create a simple development certifacate, please enter the
+following command in the main project folder...
+
+```bash
+openssl req -x509 -out certs/tls.crt -keyout certs/tls.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config <( \
+   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost,IP:127.0.0.1\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+```
+
+Creating the project involves running docker compose based on the [file](docker-compose.yml)
+provided in the project. Enter the following in your command line...
 
 ```bash
 docker compose up -d
 ```
 
-You now have a working SpiceDB and Postgres database. To check if everything is working you can run this in your command line...
+You now have a working SpiceDB and Postgres database. To check if everything is working
+you can run this in your command line...
 
 ```bash
 docker ps
 ```
 
-Now all that needs to be done is to build the Go API backend. Begin by installing package dependencies running in the command...
+Now all that needs to be done is to build the Go API backend. Begin by installing package
+dependencies running in the command...
 
 ```bash
 go mod tidy
@@ -161,6 +177,8 @@ Max Kranker
 
 - 0.1.0
   - initial commit
+- 0.2.0
+  - update readme to include tls cert instructions
 
 </details>
 
