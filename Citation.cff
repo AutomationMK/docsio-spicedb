@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Bharadwaj"
+  given-names: "Nithin"
+title: "Building Permission Systems with SpiceDB and Go: A Hands-On Guide to Zanzibar-Inspired Authorization for Production SaaS"
+version: "1.0"
+date-released: 2026-05-20

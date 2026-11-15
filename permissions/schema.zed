@@ -1,0 +1,77 @@
+definition user {}
+
+// helps bound public-share links to a time window
+caveat link_active(current_time timestamp, expires_at timestamp) {
+  current_time < expires_at
+}
+
+// an organization is the top level relation and only has admins or members
+// guests are just members with a UI flag
+definition organization {
+  relation admin: user
+  relation member: user
+  
+  permission administer = admin
+  permission view = administer + member
+}
+
+// groups belong to organizations and a group can be nested as a member
+// of another group. administer permission allows group owner or
+// orginization admin. the view permission allows all group members,
+// adminsters, or organization members
+definition group {
+  relation parent: organization
+  relation owner: user
+  relation member: user | group#member
+
+  permission administer = owner + parent->admin
+  permission view = member + administer + parent->view
+}
+
+// folders can be self-referential parents
+// organization grants view but not read on folders by default
+// read_inherited/write_inherited indirection lets us swap behavior
+// this avoids folders inheriting permissions from parent organization
+// the _inherited permission terminates at folders and does not
+// casscade up the relationship graph
+definition folder {
+  relation parent: organization | folder
+  relation viewer: user | gropu#member
+  relation editor: user | group#member
+
+  permission read = viewer + editor + parent->read_inherited
+  permission write = editor + parent->write_inherited
+  permission read_inherited = read
+  permission write_inherited = write
+}
+
+// documents have the following permission graph
+// read - direct relation, public link, or from parent folder
+// write - direct editor/owner or from parent folder
+// delete - direct owner or organization admin
+// share - direct owner or organization admin
+// comment - anyone who can read can comment
+definition document {
+  relation parent:folder
+  relation owner: user
+  relation viewer: user | group#member
+  relation editor: user | group#member
+  relation public_viewer: user:* with link_active
+  relation org_admin: organization#admin
+
+  permission read = viewer + editor + owner + public_viewer + parent->read
+  permission write = editor + owner + parent->write
+  permission delete = owner + org_admin
+  permission share = owner + org_admin
+  permission comment = read
+}
+
+// comments inherit read from parent document. delete permission
+// for the author of the comment or owner of parent document
+definition comment {
+  relation parent: document
+  relation author: user
+  
+  permission read = parent->read
+  permission delete = author + parent->delete
+}

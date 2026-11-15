@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: docsio
+      POSTGRES_PASSWORD: docsio
+      POSTGRES_DB: docsio
+    ports:
+      - "5432:5432"
+    volumes:
+      - docsio_pg:/var/lib/postgresql/data
+
+  spicedb-db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: spicedb
+      POSTGRES_PASSWORD: spicedb
+      POSTGRES_DB: spicedb
+    ports:
+      - "5433:5432"
+    volumes:
+      - spicedb_pg:/var/lib/postgresql/data
+
+  spicedb:
+    image: authzed/spicedb:latest
+    depends_on:
+      - spicedb-db
+    command:
+      - serve
+      - --grpc-preshared-key=dev-key
+      - --datastore-engine=postgres
+      - --datastore-conn-uri=postgres://spicedb:spicedb@spicedb-db:5432/spicedb?sslmode=disable
+      - --grpc-tls-cert-path=/certs/tls.crt
+      - --grpc-tls-key-path=/certs/tls.key
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./certs:/certs:ro
+    healthcheck:
+      test: ["CMD", "grpc_health_probe", "-addr=:50051", "-tls", "-tls-no-verify"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  docsio_pg:
+  spicedb_pg:

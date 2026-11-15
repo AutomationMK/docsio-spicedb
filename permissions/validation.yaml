@@ -1,0 +1,104 @@
+schema: |-
+  definition user {}
+
+  caveat link_active(current_time timestamp, expires_at timestamp) {
+    current_time < expires_at
+  }
+
+  definition organization {
+    relation admin: user
+    relation member: user
+    
+    permission administer = admin
+    permission view = administer + member
+  }
+
+  definition group {
+    relation parent: organization
+    relation owner: user
+    relation member: user | group#member
+
+    permission administer = owner + parent->admin
+    permission view = member + administer + parent->view
+  }
+
+  definition folder {
+    relation parent: organization | folder
+    relation viewer: user | gropu#member
+    relation editor: user | group#member
+
+    permission read = viewer + editor + parent->read_inherited
+    permission write = editor + parent->write_inherited
+    permission read_inherited = read
+    permission write_inherited = write
+  }
+
+  definition document {
+    relation parent:folder
+    relation owner: user
+    relation viewer: user | group#member
+    relation editor: user | group#member
+    relation public_viewer: user:* with link_active
+    relation org_admin: organization#admin
+
+    permission read = viewer + editor + owner + public_viewer + parent->read
+    permission write = editor + owner + parent->write
+    permission delete = owner + org_admin
+    permission share = owner + org_admin
+    permission comment = read
+  }
+
+  definition comment {
+    relation parent: document
+    relation author: user
+    
+    permission read = parent->read
+    permission delete = author + parent->delete
+  }
+
+relationships: |-
+  organization:acme#admin@user:cto
+  organization:acme#member@user:alice
+  organization:acme#member@user:bob
+
+  group:engineering#parent@organization:acme
+  group:engineering#owner@user:eng-lead
+  group:engineering#member@user:alice
+  group:engineering#member@user:bob
+
+  folder:design#parent@organization:acme
+  folder:design#editor@gropu:engineering#member
+
+  document:proposal#parent@folder:design
+  document:proposal#owner@user:alice
+  document:proposal#viewer@user:carol
+  document:proposal#org_admin@organization:acme#admin
+
+assertions:
+  assertTrue:
+    # direct access
+    - "document:proposal#read@user:alice"
+    - "document:proposal#write@user:alice"
+    - "document:proposal#read@user:carol"
+    - "document:proposal#delete@user:alice"
+
+    # inheritance via folder editor -> doc write
+    - "document:proposal#write@user:bob"
+
+    # org admin -> doc delete
+    - "document:proposal#delete@user:cto"
+
+    # group view via member chain
+    - "group:engineering#view@user:alice"
+    - "group:engineering#view@user:bob"
+
+  assertFalse:
+    # org member can't write a doc without folder/doc relation
+    - "document:proposal#write@user:carol"
+
+    # random user has no access
+    - "document:proposal#read@user:random"
+
+    # CTO is org admin but not folder editor; with no doc level share,
+    # can they write? yes via org_admin->delete but not write
+    - "document:proposal#write@user:cto"
