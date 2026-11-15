@@ -183,6 +183,8 @@ Max Kranker
   - move schema zed files to be internal to go project
 - 0.4.0
   - add authorization service defitinion as "Client" interface
+- 0.5.0
+  - add spicedb client implementation
 
 </details>
 
