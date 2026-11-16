@@ -191,6 +191,8 @@ Max Kranker
   - migrate to add permissions_outbox table
 - 0.8.0
   - migrate to add doc_shares table
+- 0.9.0
+  - add GOOSE_MIGRATION_DIR to .env.example
 
 </details>
 
