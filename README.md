@@ -187,6 +187,8 @@ Max Kranker
   - add spicedb client implementation
 - 0.6.0
   - update docker compose to create goose migrations and add db healthchecks
+- 0.7.0
+  - migrate to add permissions_outbox table
 
 </details>
 
