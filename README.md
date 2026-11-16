@@ -189,6 +189,8 @@ Max Kranker
   - update docker compose to create goose migrations and add db healthchecks
 - 0.7.0
   - migrate to add permissions_outbox table
+- 0.8.0
+  - migrate to add doc_shares table
 
 </details>
 
