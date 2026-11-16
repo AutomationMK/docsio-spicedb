@@ -8,7 +8,25 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - docsio_pg:/var/lib/postgresql/data
+      - docsio_pg:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docsio -d docsio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  goose:
+    image: ghcr.io/pressly/goose:latest
+    environment:
+      GOOSE_DRIVER: postgres
+      GOOSE_DBSTRING: "host=postgres port=5432 user=docsio password=docsio dbname=docsio sslmode=disable"
+      GOOSE_MIGRATION_DIR: /migrations
+    volumes:
+      - ./migrations:/migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["up"]
 
   spicedb-db:
     image: postgres:18
@@ -19,7 +37,12 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - spicedb_pg:/var/lib/postgresql/data
+      - spicedb_pg:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spicedb -d spicedb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   spicedb:
     image: authzed/spicedb:latest

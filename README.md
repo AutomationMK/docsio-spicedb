@@ -185,6 +185,8 @@ Max Kranker
   - add authorization service defitinion as "Client" interface
 - 0.5.0
   - add spicedb client implementation
+- 0.6.0
+  - update docker compose to create goose migrations and add db healthchecks
 
 </details>
 
