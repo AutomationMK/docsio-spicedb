@@ -193,6 +193,8 @@ Max Kranker
   - migrate to add doc_shares table
 - 0.9.0
   - add GOOSE_MIGRATION_DIR to .env.example
+- 0.10.0
+  - add docs service Doc model
 
 </details>
 
