@@ -195,6 +195,8 @@ Max Kranker
   - add GOOSE_MIGRATION_DIR to .env.example
 - 0.10.0
   - add docs service Doc model
+- 0.11.0
+  - add docs service DocShare model
 
 </details>
 
