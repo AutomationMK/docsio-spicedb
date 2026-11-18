@@ -197,6 +197,8 @@ Max Kranker
   - add docs service Doc model
 - 0.11.0
   - add docs service DocShare model
+- 0.12.0
+  - migrate to add docs table to database
 
 </details>
 
