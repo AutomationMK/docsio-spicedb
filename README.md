@@ -199,6 +199,8 @@ Max Kranker
   - add docs service DocShare model
 - 0.12.0
   - migrate to add docs table to database
+- 0.13.0
+  - create docs service store interface with postgres and ShareDoc method
 
 </details>
 
