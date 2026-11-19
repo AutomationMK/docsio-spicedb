@@ -12,4 +12,4 @@ CREATE UNIQUE INDEX doc_shares_unique_idx
   ON doc_shares (doc_id, grantee_id);
 
 -- +goose Down
-DROP TABLE (IF EXISTS) doc_shares [CASCADE | RESTRICT];
+DROP TABLE IF EXISTS doc_shares CASCADE;

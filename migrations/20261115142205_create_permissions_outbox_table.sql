@@ -16,4 +16,4 @@ CREATE INDEX permissions_outbox_unprocessed_idx
   WHERE processed_at is NULL;
 
 -- +goose Down
-DROP TABLE (IF EXISTS) permissions_outbox [CASCADE | RESTRICT];
+DROP TABLE IF EXISTS permissions_outbox CASCADE;

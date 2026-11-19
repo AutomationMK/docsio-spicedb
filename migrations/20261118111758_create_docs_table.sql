@@ -10,4 +10,4 @@ Create TABLE docs (
 );
 
 -- +goose Down
-DROP TABLE (IF EXISTS) docs [CASCADE | RESTRICT];
+DROP TABLE IF EXISTS docs CASCADE;

@@ -201,6 +201,8 @@ Max Kranker
   - migrate to add docs table to database
 - 0.13.0
   - create docs service store interface with postgres and ShareDoc method
+- 0.14.0
+  - fix down migration sql errors
 
 </details>
 
