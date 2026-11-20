@@ -202,7 +202,11 @@ Max Kranker
 - 0.13.0
   - create docs service store interface with postgres and ShareDoc method
 - 0.14.0
+  - create docs service store interface with postgres and ShareDoc method
+- 0.15.0
   - fix down migration sql errors
+- 0.16.0
+  - add pgx database driver package along with tests
 
 </details>
 
