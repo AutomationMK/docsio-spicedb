@@ -207,6 +207,8 @@ Max Kranker
   - fix down migration sql errors
 - 0.16.0
   - add pgx database driver package along with tests
+- 0.17.0
+  - add postgres language server configuration for text editor
 
 </details>
 
